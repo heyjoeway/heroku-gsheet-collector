@@ -2,8 +2,6 @@ SAMPLE_RANGE_NAME = 'Sheet1!A:A'
 
 import os
 import json
-from urllib import request, response
-
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
@@ -28,7 +26,7 @@ service = build(
 
 # =============================================================================
 
-from flask import Flask
+from flask import Flask, request
 app = Flask(__name__)
 
 @app.route("/submit", methods=["POST"])
