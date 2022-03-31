@@ -31,7 +31,9 @@ app = Flask(__name__)
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    if "coffee" in request.data:
+    request.get_json(force=True)
+
+    if "coffee" in request.json:
         return "I'm a teapot", 418
 
     try:
@@ -40,7 +42,7 @@ def submit():
             range=SAMPLE_RANGE_NAME,
             valueInputOption="RAW",
             body={
-                "values": [ request.data["values"] ]
+                "values": [ request.json["values"] ]
             }
         )
         sheetRequest.execute()
