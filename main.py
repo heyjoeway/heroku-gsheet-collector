@@ -1,32 +1,34 @@
+SAMPLE_RANGE_NAME = 'Sheet1!A:A'
+
 import os
+import json
+from urllib import request, response
 
 from googleapiclient.discovery import build
+from google.oauth2 import service_account
 
-# The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'
-SAMPLE_RANGE_NAME = 'Class Data!A2:E'
+SPREADSHEET_ID = None
+if "SPREADSHEET_ID" in os.environ:
+    SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
+else:
+    with open("spreadsheet_id.txt") as f:
+        SPREADSHEET_ID = f.readline()
 
-GOOGLE_API_KEY = os.environ["GOOGLE_API_KEY"]
-SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
+credentialsRaw = None
+if "GOOGLE_CREDENTIALS" in os.environ:
+    credentialsRaw = os.environ["GOOGLE_CREDENTIALS"]
+else:
+    with open("google_credentials.json") as f:
+        credentialsRaw = json.load(f)
 
-service = build('sheets', 'v4', developerKey=GOOGLE_API_KEY)
+service = build(
+    'sheets', 'v4',
+    credentials=service_account.Credentials.from_service_account_info(credentialsRaw)
+)
 
 # Call the Sheets API
-sheet = service.spreadsheets()
-result = sheet.values().get(
-    spreadsheetId=SPREADSHEET_ID,
-    range=SAMPLE_RANGE_NAME
-).execute()
 
-values = result.get('values', [])
-
-if not values:
-    print('No data found.')
-
-print('Name, Major:')
-for row in values:
-    # Print columns A and E, which correspond to indices 0 and 4.
-    print('%s, %s' % (row[0], row[4]))
+# print(response)
 
 # =============================================================================
 
@@ -35,4 +37,20 @@ app = Flask(__name__)
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    return "Hello World!"
+    if "coffee" in request.data:
+        return "I'm a teapot", 418
+
+    try:
+        sheetRequest = service.spreadsheets().values().append(
+            spreadsheetId=SPREADSHEET_ID,
+            range=SAMPLE_RANGE_NAME,
+            valueInputOption="RAW",
+            body={
+                "values": [ request.data["values"] ]
+            }
+        )
+        sheetRequest.execute()
+        return { "status": "success" }, 200
+    except:
+        return { "status": "error" }, 400
+        pass
