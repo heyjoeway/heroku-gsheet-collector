@@ -16,7 +16,7 @@ else:
 
 credentialsRaw = None
 if "GOOGLE_CREDENTIALS" in os.environ:
-    credentialsRaw = os.environ["GOOGLE_CREDENTIALS"]
+    credentialsRaw = json.loads(os.environ["GOOGLE_CREDENTIALS"])
 else:
     with open("google_credentials.json") as f:
         credentialsRaw = json.load(f)
@@ -25,10 +25,6 @@ service = build(
     'sheets', 'v4',
     credentials=service_account.Credentials.from_service_account_info(credentialsRaw)
 )
-
-# Call the Sheets API
-
-# print(response)
 
 # =============================================================================
 
