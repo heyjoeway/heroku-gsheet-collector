@@ -1,5 +1,3 @@
-SAMPLE_RANGE_NAME = 'Sheet1!A:A'
-
 import os
 import json
 from googleapiclient.discovery import build
@@ -39,8 +37,8 @@ def submit():
     try:
         sheetRequest = service.spreadsheets().values().append(
             spreadsheetId=SPREADSHEET_ID,
-            range=SAMPLE_RANGE_NAME,
-            valueInputOption="RAW",
+            range=f"{request.json['sheet']}!A:A",
+            valueInputOption="USER_ENTERED",
             body={
                 "values": [ request.json["values"] ]
             }
