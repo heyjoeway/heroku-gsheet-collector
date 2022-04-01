@@ -38,7 +38,7 @@ def submit():
         sheetRequest = service.spreadsheets().values().append(
             spreadsheetId=SPREADSHEET_ID,
             range=f"{request.json['sheet']}!A:A",
-            valueInputOption="USER_ENTERED",
+            valueInputOption="RAW",
             body={
                 "values": [ request.json["values"] ]
             }
