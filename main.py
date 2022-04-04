@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
@@ -27,6 +28,9 @@ service = build(
 from flask import Flask, request
 app = Flask(__name__)
 
+def currentTime():
+    return time.strftime('%X %x %Z')
+
 @app.route("/submit", methods=["POST"])
 def submit():
     request.get_json(force=True)
@@ -35,12 +39,13 @@ def submit():
         return "I'm a teapot", 418
 
     try:
+        values = [currentTime()] + request.json["values"]
         sheetRequest = service.spreadsheets().values().append(
             spreadsheetId=SPREADSHEET_ID,
             range=f"{request.json['sheet']}!A:A",
             valueInputOption="RAW",
             body={
-                "values": [ request.json["values"] ]
+                "values": [ values ]
             }
         )
         sheetRequest.execute()
