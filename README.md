@@ -1,12 +1,14 @@
-Please read my blog post [here](https://blog.heron.me/damn-simple-python-web-server-on-heroku-ba67cad2fb18).
+# heroku-spreadsheet-collector
 
-# Install
+Provides a write-only public API for Google Sheets using a Heroku app. (Well, it did, until Heroku killed free tier. Thanks.)
+
+## Install
 
 ```bash
 $ pip install -r requirements.txt
 ```
 
-# Deploy
+## Deploy
 
 Set `$PROJECT` to your project name.
 
