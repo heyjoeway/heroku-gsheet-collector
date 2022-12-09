@@ -1,4 +1,4 @@
-# heroku-spreadsheet-collector
+# heroku-gsheet-collector
 
 Provides a write-only public API for Google Sheets using a Heroku app. (Well, it did, until Heroku killed free tier. Thanks.)
 
